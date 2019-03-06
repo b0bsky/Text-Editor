@@ -4,6 +4,12 @@ from tkinter import Tk, Menu, scrolledtext, filedialog, END
 # Root for the main window
 root = Tk(className=" Text Editor")
 
+# Fullscreen by default
+root.state('zoomed')
+
+# Filename variable
+filename = None
+
 #--------- FUNCTIONS ----------#
 
 # Open function
@@ -15,8 +21,24 @@ def open_file():
         text_area.delete('1.0', END)
         text_area.insert('1.0', file_contents)
         file.close()
+
 def save_file():
-    file = filedialog.asksaveasfile(mode = "w")
+    global filename
+
+    if not filename:
+        file = filedialog.asksaveasfile(mode = "w", defaultextension  = ".txt")
+        data = text_area.get("1.0", END +'-1c')
+        file.write(data)
+        file.close()
+        filename = file
+    else:
+        file = open(filename, "w")
+        data = text_area.get("1.0", END + '-1c')
+        file.write(data)
+        file.close()
+
+
+
 # Quit function
 def quit():
     root.quit()
@@ -24,7 +46,7 @@ def quit():
     exit()
 
 # Creates text_area to type in
-text_area = scrolledtext.ScrolledText(root, width="80", height="100")
+text_area = scrolledtext.ScrolledText(root, width="1920", height="1080")
 text_area.pack()
 
 # Menu options
@@ -42,7 +64,7 @@ menu_bar.add_cascade(label = "Help", menu = helpMenu)
 # File sub buttons
 file_menu.add_command(label = "New")
 file_menu.add_command(label = "Open...", command = open_file)
-file_menu.add_command(label="Save...")
+file_menu.add_command(label="Save...", command = save_file)
 file_menu.add_command(label="Save as...")
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=quit)
