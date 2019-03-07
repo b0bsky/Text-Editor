@@ -12,6 +12,14 @@ filename = None
 
 #--------- FUNCTIONS ----------#
 
+# New text document function
+
+def new_file():
+    global filename
+
+    text_area.delete('1.0', END)
+    filename = None
+
 # Open function
 def open_file():
     global filename
@@ -96,7 +104,7 @@ menu_bar.add_cascade(label = "Edit", menu = editMenu)
 menu_bar.add_cascade(label = "Help", menu = helpMenu)
 
 # File sub buttons
-file_menu.add_command(label = "New")
+file_menu.add_command(label = "New", command = new_file)
 file_menu.add_command(label = "Open...", command = open_file)
 file_menu.add_command(label="Save...", command = save_file)
 file_menu.add_command(label="Save as...", command = save_as_file)
