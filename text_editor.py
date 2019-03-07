@@ -14,29 +14,63 @@ filename = None
 
 # Open function
 def open_file():
-    file = filedialog.askopenfile(parent = root, mode="rb", title = "Please select a text file")
+    global filename
+    filename = filedialog.askopenfilename(title = "Please select a text file",
+                                      defaultextension = ".txt",
+                                      filetypes = [("All Files", "*.*"),
+                                                   ("Text Files", "*.txt"),
+                                                   ("Python Scripts", "*.py"),
+                                                   ("Markdown Documents", "*.md"),
+                                                   ("JavaScript Files", "*.js"),
+                                                   ("HTML Documents", "*.html"),
+                                                   ("CSS Documents", "*.css")])
 
-    if file != None:
-        file_contents = file.read()
+    if filename:
         text_area.delete('1.0', END)
-        text_area.insert('1.0', file_contents)
-        file.close()
+        with open(filename, "r") as f:
+            text_area.insert('1.0', f.read())
+        f.close()
 
+
+# Save function
 def save_file():
+
     global filename
 
-    if not filename:
-        file = filedialog.asksaveasfile(mode = "w", defaultextension  = ".txt")
-        data = text_area.get("1.0", END +'-1c')
-        file.write(data)
-        file.close()
-        filename = file
-    else:
-        file = open(filename, "w")
-        data = text_area.get("1.0", END + '-1c')
-        file.write(data)
-        file.close()
+    if filename:
+        try:
+            content = text_area.get('1.0', END + '-1c')
+            with open(filename, "w") as f:
+                f.write(content)
 
+            f.close()
+        except Exception as e:
+            print(e)
+    else:
+        save_as_file()
+
+
+def save_as_file():
+
+    global filename
+    try:
+        new_file = filedialog.asksaveasfilename(
+                defaultextension=".txt",
+                filetypes=[("All Files", "*.*"),
+                            ("Text Files", "*.txt"),
+                            ("Python Scripts", "*.py"),
+                            ("Markdown Documents", "*.md"),
+                            ("JavaScript Files", "*.js"),
+                            ("HTML Documents", "*.html"),
+                            ("CSS Documents", "*.css")])
+        content = text_area.get('1.0', END + '-1c')
+        with open(new_file, "w") as f:
+            f.write(content)
+
+        f.close()
+        filename = new_file
+    except Exception as e:
+        print(e)
 
 
 # Quit function
@@ -65,7 +99,7 @@ menu_bar.add_cascade(label = "Help", menu = helpMenu)
 file_menu.add_command(label = "New")
 file_menu.add_command(label = "Open...", command = open_file)
 file_menu.add_command(label="Save...", command = save_file)
-file_menu.add_command(label="Save as...")
+file_menu.add_command(label="Save as...", command = save_as_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=quit)
 
