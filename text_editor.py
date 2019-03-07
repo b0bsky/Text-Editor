@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Menu, scrolledtext, filedialog, END
+from tkinter import Tk, Menu, scrolledtext, filedialog, END, font, Frame
 
 # Root for the main window
 root = Tk(className=" Text Editor")
@@ -9,6 +9,12 @@ root.state('zoomed')
 
 # Filename variable
 filename = None
+
+#--------- TOOLBOX ------------#
+
+toolbar = Frame(root, bg = "blue")
+
+toolbar.pack(side = "top", fill = "x")
 
 #--------- FUNCTIONS ----------#
 
@@ -23,15 +29,7 @@ def new_file():
 # Open function
 def open_file():
     global filename
-    filename = filedialog.askopenfilename(title = "Please select a text file",
-                                      defaultextension = ".txt",
-                                      filetypes = [("All Files", "*.*"),
-                                                   ("Text Files", "*.txt"),
-                                                   ("Python Scripts", "*.py"),
-                                                   ("Markdown Documents", "*.md"),
-                                                   ("JavaScript Files", "*.js"),
-                                                   ("HTML Documents", "*.html"),
-                                                   ("CSS Documents", "*.css")])
+    filename = filedialog.askopenfilename(title = "Please select a text file", defaultextension = ".txt")
 
     if filename:
         text_area.delete('1.0', END)
@@ -62,15 +60,7 @@ def save_as_file():
 
     global filename
     try:
-        new_file = filedialog.asksaveasfilename(
-                defaultextension=".txt",
-                filetypes=[("All Files", "*.*"),
-                            ("Text Files", "*.txt"),
-                            ("Python Scripts", "*.py"),
-                            ("Markdown Documents", "*.md"),
-                            ("JavaScript Files", "*.js"),
-                            ("HTML Documents", "*.html"),
-                            ("CSS Documents", "*.css")])
+        new_file = filedialog.asksaveasfilename(defaultextension=".txt")
         content = text_area.get('1.0', END + '-1c')
         with open(new_file, "w") as f:
             f.write(content)
