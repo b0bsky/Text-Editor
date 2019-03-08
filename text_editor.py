@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Menu, scrolledtext, filedialog, END, font, Frame
+from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text
 
 # Root for the main window
 root = Tk(className=" Text Editor")
@@ -7,19 +7,33 @@ root = Tk(className=" Text Editor")
 # Fullscreen by default
 root.state('zoomed')
 
-# Filename variable
+# Variables
 filename = None
 
-#--------- TOOLBOX ------------#
+# Preferences
+show_line_num = True
+show_cursor_location = True
+highlight_line = True
+theme = ""
 
-toolbar = Frame(root, bg = "blue")
+#--------- TOOLBAR ------------ #
 
-toolbar.pack(side = "top", fill = "x")
+toolbar = Frame(root, height = 30, bg = "light gray")
+toolbar.pack(expand = "1", fill ="x")
 
-#--------- FUNCTIONS ----------#
+#--------- LINE NUMBER BAR ---- #
+
+line_number_bar = Text(root, width = 4, padx = 3, takefocus = 0, border = 0, background = "light yellow", state = "disabled", wrap = "none")
+line_number_bar.pack(side = "left", fill = "y")
+
+#--------- TEXT AREA ---------- #
+
+text_area = scrolledtext.ScrolledText(root, width="1920", height="1080")
+text_area.pack()
+
+#--------- FUNCTIONS ---------- #
 
 # New text document function
-
 def new_file():
     global filename
 
@@ -77,32 +91,38 @@ def quit():
     root.destroy()
     exit()
 
-# Creates text_area to type in
-text_area = scrolledtext.ScrolledText(root, width="1920", height="1080")
-text_area.pack()
-
 # Menu options
 menu_bar = Menu(root)
 root.config(menu=menu_bar)
 file_menu = Menu(menu_bar, tearoff = 0)
-editMenu = Menu(menu_bar, tearoff = 0)
-helpMenu = Menu(menu_bar, tearoff = 0)
+edit_menu = Menu(menu_bar, tearoff = 0)
+view_menu = Menu(menu_bar, tearoff = 0)
+help_menu = Menu(menu_bar, tearoff = 0)
+themes_menu = Menu(view_menu, tearoff = 0)
 
 # Menu parent buttons
 menu_bar.add_cascade(label = "File", menu = file_menu)
-menu_bar.add_cascade(label = "Edit", menu = editMenu)
-menu_bar.add_cascade(label = "Help", menu = helpMenu)
+menu_bar.add_cascade(label = "Edit", menu = edit_menu)
+menu_bar.add_cascade(label = "View", menu = view_menu)
+menu_bar.add_cascade(label = "Help", menu = help_menu)
+view_menu.add_cascade(label = "Themes", menu = themes_menu)
 
 # File sub buttons
-file_menu.add_command(label = "New", command = new_file)
-file_menu.add_command(label = "Open...", command = open_file)
-file_menu.add_command(label="Save...", command = save_file)
+file_menu.add_command(label = "New", command = new_file, accelerator = "Ctrl + N", compound = "left")
+file_menu.add_command(label = "Open...", command = open_file, accelerator = "Ctrl + O", compound = "left")
+file_menu.add_command(label="Save...", command = save_file, accelerator = "Ctrl + S", compound = "left")
 file_menu.add_command(label="Save as...", command = save_as_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=quit)
 
+# View sub buttons
+view_menu.add_checkbutton(label = "Show line number", variable = show_line_num)
+view_menu.add_checkbutton(label = "Show cursor location", variable = show_cursor_location)
+view_menu.add_checkbutton(label = "Highlight current line", variable = highlight_line)
+themes_menu.add_radiobutton(label = "Default", variable = theme)
+
 # Help sub buttons
-helpMenu.add_command(label="View Help")
+help_menu.add_command(label="View Help")
 
 
 # Main Loop
