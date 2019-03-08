@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text
+from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text, PhotoImage
 
 # Root for the main window
 root = Tk(className=" Text Editor")
@@ -16,22 +16,26 @@ show_cursor_location = True
 highlight_line = True
 theme = ""
 
-#--------- TOOLBAR ------------ #
+# Images
+save_icon = PhotoImage(file = "icons/save_icon.png")
 
-toolbar = Frame(root, height = 30, bg = "light gray")
-toolbar.pack(expand = "1", fill ="x")
+# --------- TOOLBAR ------------ #
 
-#--------- LINE NUMBER BAR ---- #
+toolbar = Frame(root, height=30, bg="light gray")
+toolbar.pack(expand="1", fill="x")
 
-line_number_bar = Text(root, width = 4, padx = 3, takefocus = 0, border = 0, background = "light yellow", state = "disabled", wrap = "none")
-line_number_bar.pack(side = "left", fill = "y")
+# --------- LINE NUMBER BAR ---- #
 
-#--------- TEXT AREA ---------- #
+line_number_bar = Text(root, width=4, padx=3, takefocus=0, border=0, background="light yellow", state="disabled", wrap="none")
+line_number_bar.pack(side="left", fill="y")
+
+# --------- TEXT AREA ---------- #
 
 text_area = scrolledtext.ScrolledText(root, width="1920", height="1080")
 text_area.pack()
 
-#--------- FUNCTIONS ---------- #
+
+# --------- FUNCTIONS ---------- #
 
 # New text document function
 def new_file():
@@ -40,10 +44,11 @@ def new_file():
     text_area.delete('1.0', END)
     filename = None
 
+
 # Open function
 def open_file():
     global filename
-    filename = filedialog.askopenfilename(title = "Please select a text file", defaultextension = ".txt")
+    filename = filedialog.askopenfilename(title="Please select a text file", defaultextension=".txt")
 
     if filename:
         text_area.delete('1.0', END)
@@ -54,7 +59,6 @@ def open_file():
 
 # Save function
 def save_file():
-
     global filename
 
     if filename:
@@ -71,7 +75,6 @@ def save_file():
 
 
 def save_as_file():
-
     global filename
     try:
         new_file = filedialog.asksaveasfilename(defaultextension=".txt")
@@ -91,39 +94,82 @@ def quit():
     root.destroy()
     exit()
 
+# Undo Function
+def undo():
+    text_area.event_generate("<<Undo>>")
+    return "break"
+
+# Redo function
+def redo(event = None):
+    text_area.event_generate("<<Redo>>")
+    return "break"
+
+# Cut function
+def cut():
+    text_area.event_generate("<<Cut>>")
+    return "break"
+
+# Copy function
+def copy():
+    text_area.event_generate("<<Copy>>")
+    return "break"
+
+# Paste Function
+def paste():
+    text_area.event_generate("<<Paste>>")
+    return "break"
+
 # Menu options
 menu_bar = Menu(root)
 root.config(menu=menu_bar)
-file_menu = Menu(menu_bar, tearoff = 0)
-edit_menu = Menu(menu_bar, tearoff = 0)
-view_menu = Menu(menu_bar, tearoff = 0)
-help_menu = Menu(menu_bar, tearoff = 0)
-themes_menu = Menu(view_menu, tearoff = 0)
+file_menu = Menu(menu_bar, tearoff=0)
+edit_menu = Menu(menu_bar, tearoff=0)
+view_menu = Menu(menu_bar, tearoff=0)
+help_menu = Menu(menu_bar, tearoff=0)
+themes_menu = Menu(view_menu, tearoff=0)
 
 # Menu parent buttons
-menu_bar.add_cascade(label = "File", menu = file_menu)
-menu_bar.add_cascade(label = "Edit", menu = edit_menu)
-menu_bar.add_cascade(label = "View", menu = view_menu)
-menu_bar.add_cascade(label = "Help", menu = help_menu)
-view_menu.add_cascade(label = "Themes", menu = themes_menu)
+menu_bar.add_cascade(label="File", menu=file_menu)
+menu_bar.add_cascade(label="Edit", menu=edit_menu)
+menu_bar.add_cascade(label="View", menu=view_menu)
+menu_bar.add_cascade(label="Help", menu=help_menu)
 
 # File sub buttons
-file_menu.add_command(label = "New", command = new_file, accelerator = "Ctrl + N", compound = "left")
-file_menu.add_command(label = "Open...", command = open_file, accelerator = "Ctrl + O", compound = "left")
-file_menu.add_command(label="Save...", command = save_file, accelerator = "Ctrl + S", compound = "left")
-file_menu.add_command(label="Save as...", command = save_as_file)
+file_menu.add_command(label="New", command=new_file, accelerator="         Ctrl + N", compound="left")
+file_menu.add_command(label="Open...", command=open_file, accelerator="         Ctrl + O", compound="left")
+file_menu.add_command(label="Save...", command=save_file, accelerator="         Ctrl + S", compound="left", image = save_icon )
+file_menu.add_command(label="Save as...", command=save_as_file)
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=quit)
 
+# Edit sub buttons
+edit_menu.add_command(label = "Undo", command = undo, accelerator = "         Ctrl + Z", compound = "left")
+edit_menu.add_command(label = "Redo", command = redo, accelerator = "         Ctrl + Y", compound = "left")
+edit_menu.add_separator()
+edit_menu.add_command(label = "Cut", command = cut, accelerator = "         Ctrl + X", compound = "left")
+edit_menu.add_command(label = "Copy", command = copy, accelerator = "         Ctrl + C", compound = "left")
+edit_menu.add_command(label = "Paste", command = paste, accelerator = "         Ctrl + V", compound = "left")
+
 # View sub buttons
-view_menu.add_checkbutton(label = "Show line number", variable = show_line_num)
-view_menu.add_checkbutton(label = "Show cursor location", variable = show_cursor_location)
-view_menu.add_checkbutton(label = "Highlight current line", variable = highlight_line)
-themes_menu.add_radiobutton(label = "Default", variable = theme)
+view_menu.add_checkbutton(label="Show line number", variable=show_line_num)
+view_menu.add_checkbutton(label="Show cursor location", variable=show_cursor_location)
+view_menu.add_checkbutton(label="Highlight current line", variable=highlight_line)
+view_menu.add_cascade(label="Themes", menu=themes_menu)
+
+themes_menu.add_radiobutton(label="Default", variable=theme)
+themes_menu.add_radiobutton(label="Aquamarine", variable=theme)
+themes_menu.add_radiobutton(label="Bold Beige", variable=theme)
+themes_menu.add_radiobutton(label="Cobalt Blue", variable=theme)
+themes_menu.add_radiobutton(label="Dark Mode", variable=theme)
+themes_menu.add_radiobutton(label="Olive Green", variable=theme)
+
 
 # Help sub buttons
 help_menu.add_command(label="View Help")
 
+# Fixing binding issues
+text_area.bind("Control-y", redo)
+text_area.bind("Control-Y", redo)
 
 # Main Loop
 root.mainloop()
