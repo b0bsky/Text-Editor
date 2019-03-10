@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text, PhotoImage
+from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text, PhotoImage, Toplevel
 
 # Root for the main window
 root = Tk(className=" Text Editor")
@@ -14,7 +14,7 @@ filename = None
 show_line_num = True
 show_cursor_location = True
 highlight_line = True
-theme = ""
+theme = "Default"
 
 # Images
 save_icon = PhotoImage(file = "icons/save_icon.png")
@@ -119,6 +119,18 @@ def paste():
     text_area.event_generate("<<Paste>>")
     return "break"
 
+# Select all function
+def select_all(event = None):
+    text_area.tag_add("sel", "1.0", END + "-1c")
+    return "break"
+
+# Find function
+def find(event = None):
+    search_popup = Toplevel(root)
+    search_popup.title("Find text")
+    search_popup.transient(root)
+    search_popup.resizable(False, False)
+
 # Menu options
 menu_bar = Menu(root)
 root.config(menu=menu_bar)
@@ -149,6 +161,10 @@ edit_menu.add_separator()
 edit_menu.add_command(label = "Cut", command = cut, accelerator = "         Ctrl + X", compound = "left")
 edit_menu.add_command(label = "Copy", command = copy, accelerator = "         Ctrl + C", compound = "left")
 edit_menu.add_command(label = "Paste", command = paste, accelerator = "         Ctrl + V", compound = "left")
+edit_menu.add_separator()
+edit_menu.add_command(label = "Find", command = find, accelerator = "         Ctrl + F", compound = "left")
+edit_menu.add_separator()
+edit_menu.add_command(label = "Select All", command = select_all, underline = 7, accelerator = "         Ctrl + A", compound = "left")
 
 # View sub buttons
 view_menu.add_checkbutton(label="Show line number", variable=show_line_num)
@@ -170,6 +186,8 @@ help_menu.add_command(label="View Help")
 # Fixing binding issues
 text_area.bind("Control-y", redo)
 text_area.bind("Control-Y", redo)
+text_area.bind("Control-a", select_all)
+text_area.bind("Control-A", select_all)
 
 # Main Loop
 root.mainloop()
