@@ -1,5 +1,5 @@
 # Imports
-from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text, PhotoImage, Toplevel
+from tkinter import Tk, Menu, scrolledtext, filedialog, END, Frame, Text, PhotoImage, Toplevel, Label, Checkbutton, Entry, IntVar
 
 # Root for the main window
 root = Tk(className=" Text Editor")
@@ -130,6 +130,11 @@ def find(event = None):
     search_popup.title("Find text")
     search_popup.transient(root)
     search_popup.resizable(False, False)
+    Label(search_popup, text = "Find All:").grid(row = 0, column = 0, sticky = "e")
+    search_entry = Entry(search_popup, width = 25).grid(row = 0, column = 1, padx = 2, pady = 2, sticky = "we")
+    search_entry.focus_set()
+    ignore_case = IntVar
+    Checkbutton(search_popup, text="Ignore Case", variable = ignore_case).grid(row = 1, column = 1, sticky = "e", padx = 2, pady = 2)
 
 # Menu options
 menu_bar = Menu(root)
